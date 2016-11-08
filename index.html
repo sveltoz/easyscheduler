@@ -1,0 +1,181 @@
+<!doctype html>
+<html ng-app="mwl.calendar.docs">
+  <head>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.4/interact.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.0.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="//cdn.rawgit.com/jkbrzt/rrule/v2.1.0/lib/rrule.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.25/js/bootstrap-colorpicker-module.min.js"></script>
+    <script src="//mattlewis92.github.io/angular-bootstrap-calendar/dist/js/angular-bootstrap-calendar-tpls.min.js"></script>
+     <script src="example.js"></script>
+    <script src="helpers.js"></script>   
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/angular-bootstrap-colorpicker/3.0.25/css/colorpicker.min.css" rel="stylesheet">
+    <link href="//mattlewis92.github.io/angular-bootstrap-calendar/dist/css/angular-bootstrap-calendar.min.css" rel="stylesheet">
+  </head>
+  <style>
+      @media screen and (min-width: 480px) {
+    .input-group {
+        max-width: 50%
+    }
+}
+  </style>
+  <body>
+  <div ng-controller="KitchenSinkCtrl as vm">
+  <h2 class="text-center">{{ vm.calendarTitle }}</h2>
+    <div class="row">
+    <div class="col-md-6 text-center">
+      <div class="btn-group">
+        <button
+          class="btn btn-primary"
+          mwl-date-modifier
+          date="vm.viewDate"
+          decrement="vm.calendarView"
+          ng-click="vm.cellIsOpen = false">
+          Previous
+        </button>
+        <button
+          class="btn btn-default"
+          mwl-date-modifier
+          date="vm.viewDate"
+          set-to-today
+          ng-click="vm.cellIsOpen = false">
+          Today
+        </button>
+        <button
+          class="btn btn-primary"
+          mwl-date-modifier
+          date="vm.viewDate"
+          increment="vm.calendarView"
+          ng-click="vm.cellIsOpen = false">
+          Next
+        </button>
+      </div>
+    </div>
+    <br class="visible-xs visible-sm">
+    <div class="col-md-6 text-center">
+      <div class="btn-group">
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'year'" ng-click="vm.cellIsOpen = false">Year</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'month'" ng-click="vm.cellIsOpen = false">Month</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'week'" ng-click="vm.cellIsOpen = false">Week</label>
+        <label class="btn btn-primary" ng-model="vm.calendarView" uib-btn-radio="'day'" ng-click="vm.cellIsOpen = false">Day</label>
+      </div>
+    </div>
+  </div>
+   <!--<h3 id="event-editor">
+     <button
+      class="btn btn-primary pull-right"  onclick="document.getElementById('Div1').style.display='block'">
+      Add new
+    </button>
+    <div class="clearfix"></div>
+  </h3>-->
+<!--  <br>-->
+ <mwl-calendar
+    events="vm.eventStart"
+    view="vm.calendarView"
+    view-title="vm.calendarTitle"
+    view-date="vm.viewDate"
+    on-event-click="vm.eventClicked(calendarEvent)"
+    on-event-times-changed="vm.eventTimesChanged(calendarEvent); calendarEvent.startsAt = calendarNewEventStart; calendarEvent.endsAt = calendarNewEventEnd"
+    cell-is-open="vm.cellIsOpen"
+    day-view-start="06:00"
+    day-view-end="22:59"
+    day-view-split="30"
+    cell-modifier="vm.modifyCell(calendarCell)"
+    cell-auto-open-disabled="false"
+    on-timespan-click="vm.timespanClicked(calendarDate, calendarCell)">
+  </mwl-calendar>
+<div id="Div1" class="modal">
+ <form class="modal-content animate">
+      <div class="modal-header">
+            <button type="button" class="close" title="Close Modal" onclick="document.getElementById('Div1').style.display='none'"  data-dismiss="modal">x</button>
+            <h3>Add New Event</h3>           
+          </div>
+          <div class="modal-body">
+        <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Starts at</th>
+        <th>Ends at</th>
+        <th>Add Event</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <input
+            type="text"
+            class="form-control"
+            ng-model="event.title" id="title">
+        </td>
+       <td>
+          <p class="input-group" style="max-width: 100%">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              uib-datepicker-popup="dd MMMM yyyy"
+              ng-model="event.startsAt"
+              is-open="event.startOpen"
+              close-text="Close" id="startDate" >
+            <span class="input-group-btn">
+              <button
+                type="button"
+                class="btn btn-default"
+                ng-click="vm.toggle($event, 'startOpen', event)">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </button>
+            </span>
+          </p>
+          <div
+            uib-timepicker
+            ng-model="event.startsAt"
+            hour-step="1"
+            minute-step="15"
+            show-meridian="true">
+          </div>
+        </td>
+        <td>
+          <p class="input-group" style="max-width: 100%">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              uib-datepicker-popup="dd MMMM yyyy"
+              ng-model="event.endsAt"
+              is-open="event.endOpen"
+              close-text="Close" id="EndDate">
+            <span class="input-group-btn">
+              <button
+                type="button"
+                class="btn btn-default"
+                ng-click="vm.toggle($event, 'endOpen', event)">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </button>
+            </span>
+          </p>
+          <div
+            uib-timepicker
+            ng-model="event.endsAt"
+            hour-step="1"
+            minute-step="15"
+            ng-change="vm.changed()"
+            show-meridian="true">
+          </div>
+        </td>
+        <td>
+         <button class="btn btn-primary pull-right" ng-click="vm.addEvent()">Add Event</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+ </div>
+  </form>
+</div>
+</div>
+  </body>
+</html>
+

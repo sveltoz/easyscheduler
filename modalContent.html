@@ -1,0 +1,106 @@
+
+
+      <div class="modal-dialog">
+      <div class="modal-header">
+      <button type="button" class="close" title="Close Modal" ng-click="$close()"  data-dismiss="modal">x</button>
+        <h3 class="modal-title">Edit Event!</h3>
+      </div>
+      <div class="modal-body">
+       <table class="table table-bordered">
+
+    <thead>
+      <tr>s
+        <th>Title</th>
+        <!--<th>Primary color</th>
+        <th>Secondary color</th>-->
+         <th>Starts at</th>
+        <th>Ends at</th>
+       <!-- <th>Remove</th>-->
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>       
+          <input
+            type="text"
+            class="form-control"
+            ng-model="vm.event.title"
+            id="Text1">
+        </td>
+      <!--<td>
+          <input class="form-control" colorpicker type="text" ng-model="event.color.primary">
+        </td>
+        <td>
+          <input class="form-control" colorpicker type="text" ng-model="event.color.secondary">
+        </td>-->
+        <td>
+          <p class="input-group" style="max-width: 100%">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              uib-datepicker-popup="dd MMMM yyyy"
+              ng-model="vm.event.startsAt"
+              is-open="vm.event.startOpen"
+              id="Text2"
+              close-text="Close">
+            <span class="input-group-btn">
+              <button
+                type="button"
+                class="btn btn-default"
+                ng-click="vm.toggle($event, 'startOpen', vm.event)"
+               >
+                <i class="glyphicon glyphicon-calendar"></i>
+              </button>
+            </span>
+          </p>
+          <div
+            uib-timepicker
+            ng-model="vm.event.startsAt"
+            hour-step="1"
+            minute-step="15"
+            show-meridian="true"
+            id="Div2">
+          </div>
+        </td>
+        <td>
+          <p class="input-group" style="max-width: 100%">
+            <input
+              type="text"
+              class="form-control"
+              readonly
+              uib-datepicker-popup="dd MMMM yyyy"
+              id="Text3"
+              ng-model="vm.event.endsAt"
+              is-open="event.endOpen"
+              close-text="Close">
+            <span class="input-group-btn">
+              <button
+                type="button"
+                class="btn btn-default"
+                ng-click="vm.toggle($event, 'endOpen', vm.event)">
+                <i class="glyphicon glyphicon-calendar"></i>
+              </button>
+            </span>
+          </p>
+          <div
+            uib-timepicker
+            ng-model="vm.event.endsAt"
+            hour-step="1"
+            minute-step="15"
+            show-meridian="true" id="Div3"
+            >
+          </div>
+        </td>    
+      </tr>
+      
+    </tbody>
+
+  </table>
+                </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="vm.addEvent(vm.event)">Edit Event</button>
+      </div>
+      </div>
+    
